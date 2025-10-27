@@ -1,0 +1,4 @@
+{
+    "data_path": "data/SOLUSDT_train.parquet",
+    "interval": 1
+}
