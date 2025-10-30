@@ -2,15 +2,14 @@ import polars as pl
 
 
 class MarketData:
-    def __init__(self,config):
-        self.data_path = config["data_path"]
-        self.start_date = config.get("start_date", None)
-        self.end_date = config.get("end_date", None)
-        self.interval = config.get("interval", 1)  # 默认1分钟K线
-        self.vwap_window = config.get("vwap_window", 20)  # VWAP计算窗口，默认20
-        self.estimate_window = config.get("estimate_window", 60*24)  # 波动率估计窗口，默认60*24
-        self.n_sigma = config.get("n_sigma", 3)  # 阈值倍数，默认2
-
+    def __init__(self, data_path, start_date, end_date, interval, vwap_window, estimate_window, n_sigma):
+        self.data_path = data_path
+        self.start_date = start_date
+        self.end_date = end_date
+        self.interval = interval  # 默认1分钟K线
+        self.vwap_window = vwap_window  # VWAP计算窗口，默认20
+        self.estimate_window = estimate_window  # 波动率估计窗口，默认60*24
+        self.n_sigma = n_sigma  # 阈值倍数，默认3
 
         self.data = pl.read_parquet(self.data_path).sort(
             "open_time"

@@ -15,7 +15,7 @@ class Order:
 
 # 交易所类
 class Exchange:
-    def __init__(self, initial_balance=10000, fee_rate=0, log_file=None):
+    def __init__(self, initial_balance, fee_rate, log_file):
         # 基础账户信息
         self.initial_balance = initial_balance  # 初始资金
         self.cash = initial_balance     # 当前现金余额
