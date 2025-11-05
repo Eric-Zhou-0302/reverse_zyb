@@ -50,7 +50,8 @@ class MarketData:
             top_threshold = pl.col("vwap") * (1 + self.n_sigma * pl.col("sigma"))
         ).drop_nulls()
         
-        self.current_index = 0    
+        self.current_index = 0
+
     def get_current_bar(self):
         """
         获取当前K线

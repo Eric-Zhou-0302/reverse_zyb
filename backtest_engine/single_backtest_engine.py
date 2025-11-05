@@ -17,7 +17,7 @@ from tqdm import tqdm
 'fee_rate': 手续费率
 '''
 
-def back_test(config):
+def Single_Back_Test(config):
     # 加载配置参数
     data_path = config.get('data_path', None)
     # 检查数据路径是否存在
@@ -114,3 +114,5 @@ def back_test(config):
 
     # 关闭Exchange，确保日志系统正确关闭
     exchange.close()
+
+    return results
