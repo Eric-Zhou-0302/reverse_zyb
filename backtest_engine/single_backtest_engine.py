@@ -40,14 +40,17 @@ def Single_Back_Test(config):
     # 手续费率
     fee_rate = config.get('fee_rate', 0)
 
-    # 日志
+    # 日志 & 交易记录
     # 检查是否存在日志目录，如果没有则生成
     if not os.path.exists('./Logging'):
         os.mkdir('./Logging')
-    # 生成日志文件路径
+    # 检查是否存在交易记录目录，如果没有则生成
+    if not os.path.exists('./Trades_Records'):
+        os.mkdir('./Trades_Records')
+    # 生成日志和交易记录文件路径，使用同一时间戳
     current_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     log_file = "Logging/" + current_timestamp + ".log"
-
+    trades_records_file = "Trades_Records/" + current_timestamp + ".csv"
 
     # 初始化市场数据和交易所
     market_data = MarketData(data_path, start_date, end_date, interval, vwap_window, estimate_window, n_sigma)
@@ -97,7 +100,7 @@ def Single_Back_Test(config):
             pbar.update(1)
 
     #  保存交易记录表格为csv文件
-    exchange.save_trades_records().write_csv('trades_records.csv')
+    exchange.save_trades_records().write_csv(trades_records_file)
 
     # # 计算回测指标
     results = exchange.calculate_performance_metrics()
