@@ -58,7 +58,7 @@ class Exchange:
             self.cash -= cost  # 扣除现金
             self.position += order.quantity  # 增加持仓
             self.position_cost = fill_price  # 更新持仓成本价
-            self.logger.info(f"买入 {order.quantity} @ ${fill_price:.2f}, 成本 ${cost:.2f} (含手续费 ${fee:.2f})")
+            self.logger.info(f"{timestamp}买入 {order.quantity} @ ${fill_price:.2f}, 成本 ${cost:.2f} (含手续费 ${fee:.2f})")
         elif order.side == "sell":
             # 卖出操作
             order.quantity = self.position  # 卖出所有持仓
