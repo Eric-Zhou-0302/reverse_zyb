@@ -68,7 +68,7 @@ class Exchange:
             self.realized_pnl += (fill_price - self.position_cost) * order.quantity - fee  # 更新已实现盈亏
             self.position = 0  # 清空持仓
             self.position_cost = 0  # 重置持仓成本价
-            self.logger.info(f"卖出 {order.quantity} @ ${fill_price:.2f}, 收入 ${revenue:.2f} (含手续费 ${fee:.2f})")
+            self.logger.info(f"{timestamp}卖出 {order.quantity} @ ${fill_price:.2f}, 收入 ${revenue:.2f} (含手续费 ${fee:.2f})")
         self.limit_order = None
 
         # 记录交易
