@@ -96,8 +96,9 @@ class Exchange:
         self.minute_nav.append({'date': date, 'nav': nav})
 
     def save_trades_records(self):
+        """保存交易记录为DataFrame并返回"""
         self.trades_records = pl.DataFrame(self.trades)
-        return pl.DataFrame(self.trades_records)
+        return self.trades_records
 
     def set_start_date(self, start_date):
         self.start_date = start_date
