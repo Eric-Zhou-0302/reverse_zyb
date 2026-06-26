@@ -1,5 +1,6 @@
 from module.market_data import MarketData
 from module.exchange import Exchange
+from module.report_generator import generate_report_from_run
 import datetime
 import os
 from tqdm import tqdm
@@ -47,10 +48,14 @@ def Single_Back_Test(config):
     # 检查是否存在交易记录目录，如果没有则生成
     if not os.path.exists('./Trades_Records'):
         os.mkdir('./Trades_Records')
-    # 生成日志和交易记录文件路径，使用同一时间戳
+    # 检查是否存在结果目录，如果没有则生成
+    if not os.path.exists('./Results'):
+        os.mkdir('./Results')
+    # 生成日志、交易记录和结果文件路径，使用同一时间戳
     current_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     log_file = "Logging/" + current_timestamp + ".log"
-    trades_records_file = "Trades_Records/" + current_timestamp + ".csv"
+    trades_records_file = "Trades_Records/" + current_timestamp + "_trades.csv"
+    results_file = "Results/" + current_timestamp + "_backtest_report.html"
 
     # 初始化市场数据和交易所
     market_data = MarketData(data_path, start_date, end_date, interval, vwap_window, estimate_window, n_sigma)
@@ -101,6 +106,9 @@ def Single_Back_Test(config):
 
     #  保存交易记录表格为csv文件
     exchange.save_trades_records().write_csv(trades_records_file)
+
+    #  生成HTML报告保存到Results目录
+    generate_report_from_run(config, exchange, market_data, output_html_path=results_file)
 
     # # 计算回测指标
     results = exchange.calculate_performance_metrics()

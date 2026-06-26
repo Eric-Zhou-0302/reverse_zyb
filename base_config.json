@@ -2,7 +2,5 @@
     "data_path": "data_set/SOLUSDT_train.parquet",
     "interval": 1,
     "initial_balance": 100000,
-    "fee_rate": 0,
-    "start_date": "2023-01-01 00:00:00",
-    "end_date": "2024-01-01 00:00:00"
+    "fee_rate": 0
 }

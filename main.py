@@ -16,4 +16,3 @@ if sys.argv[1] == 'batch':
     base_config = json.load(open('base_config.json', 'r'))
     configs = configs_generator(base_config)
     batch_backtest_engine(configs)
-

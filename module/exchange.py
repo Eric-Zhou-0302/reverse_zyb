@@ -59,13 +59,15 @@ class Exchange:
             self.position += order.quantity  # 增加持仓
             self.position_cost = fill_price  # 更新持仓成本价
             self.logger.info(f"{timestamp}买入 {order.quantity} @ ${fill_price:.2f}, 成本 ${cost:.2f} (含手续费 ${fee:.2f})")
+            trade_pnl = 0
         elif order.side == "sell":
             # 卖出操作
             order.quantity = self.position  # 卖出所有持仓
             fee = order.quantity * fill_price * self.fee_rate  # 计算手续费
             revenue = order.quantity * fill_price - fee  # 计算总收入
             self.cash += revenue  # 增加现金
-            self.realized_pnl += (fill_price - self.position_cost) * order.quantity - fee  # 更新已实现盈亏
+            trade_pnl = (fill_price - self.position_cost) * order.quantity - fee
+            self.realized_pnl += trade_pnl  # 更新已实现盈亏（累计）
             self.position = 0  # 清空持仓
             self.position_cost = 0  # 重置持仓成本价
             self.logger.info(f"{timestamp}卖出 {order.quantity} @ ${fill_price:.2f}, 收入 ${revenue:.2f} (含手续费 ${fee:.2f})")
@@ -81,7 +83,8 @@ class Exchange:
             "fee": fee,
             "cash": self.cash,
             "position": self.position,
-            "realized_pnl": self.realized_pnl
+            "pnl": trade_pnl,
+            "realized_pnl": self.realized_pnl,
         }
         self.trades.append(trade)
 
@@ -120,7 +123,8 @@ class Exchange:
             fee = quantity * close_price * self.fee_rate
             revenue = quantity * close_price - fee
             self.cash += revenue
-            self.realized_pnl += (close_price - self.position_cost) * quantity - fee
+            trade_pnl = (close_price - self.position_cost) * quantity - fee
+            self.realized_pnl += trade_pnl
             
             # 记录强制平仓日志
             time_str = timestamp.strftime('%Y-%m-%d %H:%M:%S') if timestamp else datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -136,6 +140,7 @@ class Exchange:
                 "fee": fee,
                 "cash": self.cash,
                 "position": 0,
+                "pnl": trade_pnl,
                 "realized_pnl": self.realized_pnl
             }
             self.trades.append(trade)
@@ -193,8 +198,8 @@ class Exchange:
         sharpe_ratio = compounded_annualized_returns / annualized_volatility
         # 交易对数
         num_trades = len(self.trades) / 2 
-        # 胜率
-        wins = sum(1 for trade in self.trades if trade['side'] == 'sell' and (trade['realized_pnl'] > 0))
+        # 胜率（按每次卖出单笔盈亏统计）
+        wins = sum(1 for trade in self.trades if trade['side'] == 'sell' and (trade['pnl'] > 0))
         win_rate = wins / num_trades if num_trades > 0 else 0
         # 最大回撤
         cumulative_returns = performance_metrics["cumulative_net_returns"].to_numpy()
